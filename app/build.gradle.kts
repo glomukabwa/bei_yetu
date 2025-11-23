@@ -81,6 +81,7 @@ android {
         // For Compose Previews
         implementation("androidx.compose.ui:ui-tooling-preview:1.6.0")
         debugImplementation("androidx.compose.ui:ui-tooling:1.6.0")
+        implementation("com.google.android.material:material:1.11.0")
 
     }
 
