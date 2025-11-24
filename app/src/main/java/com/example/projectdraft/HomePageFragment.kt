@@ -44,6 +44,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -109,7 +110,7 @@ fun HomePageScreen(onSearch: (String) -> Unit){
         TopBar()
         SearchBar()
         topCategories()
-        SearchBar(onSearch)
+        Suggested()
     }
 }
 
@@ -235,26 +236,105 @@ fun topCategories(){
     ){
         Text(
             text = "Top Categories",
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.titleSmall,
+            modifier = Modifier
+                .padding(bottom = 10.dp)
         )
 
-        Row{
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            IconAndName(R.drawable.ic_electronics, "Electronics")
+            IconAndName(R.drawable.ic_pastries, "Pastries")
+            IconAndName(R.drawable.ic_detergents, "Detergents")
+        }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            IconAndName(R.drawable.ic_drinks, "Drinks")
+            IconAndName(R.drawable.ic_beauty, "Beauty")
+            IconAndName(R.drawable.ic_organic, "Organic")
         }
     }
 }
 
 @Composable
 fun IconAndName(icon: Int, name : String){
-    Column{
+    Column(
+        modifier = Modifier
+            .size(width = 85.dp, height = 70.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
         Image(
             painter = painterResource(icon),
             contentDescription = "Category Icon",
-            modifier = Modifier.size(25.dp)
+            modifier = Modifier.size(40.dp)
         )
 
         Text(
             text = "$name"
+        )
+    }
+}
+
+@Composable
+fun Suggested(){
+    Column (
+        modifier = Modifier
+            .padding(horizontal = 30.dp, vertical = 15.dp)
+    ){
+        Text(
+            text = "Suggested for you",
+            style = MaterialTheme.typography.titleSmall
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            SuggestionAndName(R.drawable.test_bread, "Festive Bread")
+            SuggestionAndName(R.drawable.test_tv, "Samsung 55\" TV")
+            SuggestionAndName(R.drawable.test_washm, "Hisense 10.5kgs")
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            SuggestionAndName(R.drawable.test_fridge, "Samsung Fridge")
+            SuggestionAndName(R.drawable.test_milk, "Brookside Milk")
+            SuggestionAndName(R.drawable.test_blender, "Ramtons Blender")
+        }
+    }
+}
+
+@Composable
+fun SuggestionAndName(icon: Int, name : String){
+    Column(
+        modifier = Modifier
+            .size(width = 90.dp, height = 170.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ){
+        Image(
+            painter = painterResource(icon),
+            contentDescription = "Category Icon",
+            modifier = Modifier.size(100.dp)
+        )
+
+        Text(
+            text = "$name",
+            textAlign = TextAlign.Center
         )
     }
 }
