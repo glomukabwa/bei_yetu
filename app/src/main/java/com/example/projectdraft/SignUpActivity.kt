@@ -10,6 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview // <-- 1. Import for Preview
+import com.example.projectdraft.ui.theme.ProjectdraftTheme
 
 class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,5 +88,17 @@ fun SignUpScreen(onSignUp: () -> Unit, onGoToLogin: () -> Unit) {
         TextButton(onClick = onGoToLogin) {
             Text("Back to Login")
         }
+    }
+}
+
+@Preview(showBackground = true, name = "Sign Up Screen Preview")
+@Composable
+fun SignUpScreenPreview() {
+    // 3. Wrap in your Theme and call the main composable with placeholder lambdas
+    ProjectdraftTheme {
+        SignUpScreen(
+            onSignUp = { /* Preview: Sign Up Clicked */ },
+            onGoToLogin = { /* Preview: Go to Login Clicked */ }
+        )
     }
 }

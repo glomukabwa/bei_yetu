@@ -46,13 +46,15 @@ android {
     dependencies {
         // --- Compose and Core Libraries ---
         implementation(platform("androidx.compose:compose-bom:2024.04.00"))
+        implementation(libs.androidx.foundation) // ViewModel integration
         implementation("androidx.compose.ui:ui")
         implementation("androidx.compose.ui:ui-graphics")
         implementation("androidx.compose.ui:ui-tooling-preview")
         implementation("androidx.compose.material3:material3")
         implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
         implementation(libs.androidx.activity.ktx)
-        implementation(libs.material3) // ViewModel integration
+        implementation(libs.material3)
+        implementation(libs.androidx.foundation) // ViewModel integration
 
         // --- Networking (for product data) ---
         // Use the latest stable versions of Ktor or Retrofit + OkHttp
@@ -83,7 +85,7 @@ android {
         debugImplementation("androidx.compose.ui:ui-tooling:1.6.0")
         implementation("com.google.android.material:material:1.11.0")
         implementation("androidx.navigation:navigation-compose:2.7.0")
-
+        implementation("androidx.compose.material:material-icons-extended")
 
     }
 
