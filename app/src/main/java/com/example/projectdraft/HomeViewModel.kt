@@ -1,11 +1,15 @@
 package com.example.projectdraft
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
     /*The parameter application is the whole application context. There are two different
@@ -44,58 +48,123 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val categoriesDao = db.categoriesDao()
     //Then we access the dao method we want using the database
 
-    init {
+    /*init {
         // init block populates database and loads initial data
         viewModelScope.launch {
             //viewModelScope.launch runs database operations in a background thread.
 
-            if (categoriesDao.countCategories() == 0) {
-                insertDefaultCategories()
-            }
+            withContext(Dispatchers.IO){
+                if (categoriesDao.countCategories() == 0) {
+                    insertDefaultCategories()
+                    // wait until they’re actually in the DB
+                    /*
+                    while (categoriesDao.countCategories() == 0) {
+                        delay(10)   // tiny pause – you can also use a suspend‑ready signal
+                        //This is so that I can ensure there are foreign keys before using them in the next line
+                    }*/
 
-            if (productDao.countProducts() == 0) {
-                insertDefaultProducts()
+                    if (productDao.countProducts() == 0) {
+                        insertDefaultProducts()
+                        /*
+                        while (productDao.countProducts() == 0) {
+                            delay(10)
+                        }//Another delay fto ensure the products have been inserted before we load them*/
+                    }
+                }
+
+                loadAllProducts()
+                /*The above if statement means that if the table is empty, insert the default products
+                * so they'll be the first products. If it isn't, then just load the items in the
+                * products table. It ensures that the default items are not inserted over and over again*/
             }
-            loadAllProducts()
-            /*The above if statement means that if the table is empty, insert the default products
-            * so they'll be the first products. If it isn't, then just load the items in the
-            * products table. It ensures that the default items are not inserted over and over again*/
         }
-    }
-
-    /*Categories Ids:
-    * 1 - Electronics
-    * 2 - Pastries
-    * 3 - Detergents
-    * 4 - Drinks
-    * 5 - Beauty
-    * 6 - Organic*/
-    fun insertDefaultCategories() {
+    }*/
+    init {
         viewModelScope.launch {
-            categoriesDao.insertCategory(CategoriesEntity(name = "Electronics"))
-            categoriesDao.insertCategory(CategoriesEntity(name = "Pastries"))
-            categoriesDao.insertCategory(CategoriesEntity(name = "Detergents"))
-            categoriesDao.insertCategory(CategoriesEntity(name = "Drinks"))
-            categoriesDao.insertCategory(CategoriesEntity(name = "Beauty"))
-            categoriesDao.insertCategory(CategoriesEntity(name = "Organic"))
+            withContext(Dispatchers.IO) {
+                val categoriesCount = categoriesDao.countCategories()
+                if (categoriesCount == 0) {
+                    val ids = insertDefaultCategories()
+                    insertDefaultProducts(ids)
+                }
+                loadAllProducts()
+            }
         }
     }
 
-    fun insertDefaultProducts(){
-        viewModelScope.launch{
-            // Home View default products
-            productDao.insertProduct(ProductEntity(name ="Festive Bread", categoryId = 2, price = 5.99, imageRes = R.drawable.test_bread))
-            productDao.insertProduct(ProductEntity(name ="Samsung 55\" TV", categoryId = 1 , price = 599.99, imageRes = R.drawable.test_tv))
-            productDao.insertProduct(ProductEntity(name ="Hisense Washing Machine", categoryId = 3, price = 399.99, imageRes =R.drawable.test_washm))
-            productDao.insertProduct(ProductEntity(name ="Samsung Fridge", categoryId = 1, price = 799.99, imageRes = R.drawable.test_fridge))
-            productDao.insertProduct(ProductEntity(name ="Brookside Milk", categoryId = 4, price = 2.99, imageRes = R.drawable.test_milk))
-            productDao.insertProduct(ProductEntity(name ="Ramtons Blender", categoryId = 1, price = 49.99, imageRes = R.drawable.test_blender))
-        }
+    suspend fun insertDefaultCategories(): Map<String, Int> {
+        val categoryIds = mutableMapOf<String, Int>()
+        categoryIds["Electronics"] = categoriesDao.insertCategory(CategoriesEntity(name = "Electronics")).toInt()
+        Log.d("HomeViewModel", "Inserted category: Electronics")
+        categoryIds["Pastries"] = categoriesDao.insertCategory(CategoriesEntity(name = "Pastries")).toInt()
+        Log.d("HomeViewModel", "Inserted category: Pastries")
+        categoryIds["Detergents"] = categoriesDao.insertCategory(CategoriesEntity(name = "Detergents")).toInt()
+        Log.d("HomeViewModel", "Inserted category: Detergents")
+        categoryIds["Drinks"] = categoriesDao.insertCategory(CategoriesEntity(name = "Drinks")).toInt()
+        Log.d("HomeViewModel", "Inserted category: Drinks")
+        categoryIds["Beauty"] = categoriesDao.insertCategory(CategoriesEntity(name = "Beauty")).toInt()
+        Log.d("HomeViewModel", "Inserted category: Beauty")
+        categoryIds["Organic"] = categoriesDao.insertCategory(CategoriesEntity(name = "Organic")).toInt()
+        Log.d("HomeViewModel", "Inserted category: Organic")
+        return categoryIds
     }
+
+    /*
+    suspend fun insertDefaultCategories() {
+        Log.d("HomeViewModel", "Inserting default categories...")
+        categoriesDao.insertCategory(CategoriesEntity(name = "Electronics"))
+        Log.d("HomeViewModel", "Inserted category: Electronics")
+        categoriesDao.insertCategory(CategoriesEntity(name = "Pastries"))
+        Log.d("HomeViewModel", "Inserted category: Pastries")
+        categoriesDao.insertCategory(CategoriesEntity(name = "Detergents"))
+        Log.d("HomeViewModel", "Inserted category: Detergents")
+        categoriesDao.insertCategory(CategoriesEntity(name = "Drinks"))
+        Log.d("HomeViewModel", "Inserted category: Drinks")
+        categoriesDao.insertCategory(CategoriesEntity(name = "Beauty"))
+        Log.d("HomeViewModel", "Inserted category: Beauty")
+        categoriesDao.insertCategory(CategoriesEntity(name = "Organic"))
+        Log.d("HomeViewModel", "Inserted category: Organics")
+    }*/
+    /*suspend fun insertDefaultProducts(){
+        Log.d("HomeViewModel", "Inserting default products")
+        // Home View default products
+        productDao.insertProduct(ProductEntity(name ="Festive Bread", categoryId = 2, price = 5.99, imageRes = R.drawable.test_bread))
+        Log.d("HomeViewModel", "Inserted product 1")
+        productDao.insertProduct(ProductEntity(name ="Samsung 55\" TV", categoryId = 1 , price = 599.99, imageRes = R.drawable.test_tv))
+        Log.d("HomeViewModel", "Inserted product 2")
+        productDao.insertProduct(ProductEntity(name ="Hisense Washing Machine", categoryId = 3, price = 399.99, imageRes =R.drawable.test_washm))
+        Log.d("HomeViewModel", "Inserted product 3")
+        productDao.insertProduct(ProductEntity(name ="Samsung Fridge", categoryId = 1, price = 799.99, imageRes = R.drawable.test_fridge))
+        Log.d("HomeViewModel", "Inserted product 4")
+        productDao.insertProduct(ProductEntity(name ="Brookside Milk", categoryId = 4, price = 2.99, imageRes = R.drawable.test_milk))
+        Log.d("HomeViewModel", "Inserted product 5")
+        productDao.insertProduct(ProductEntity(name ="Ramtons Blender", categoryId = 1, price = 49.99, imageRes = R.drawable.test_blender))
+        Log.d("HomeViewModel", "Inserted product 6")
+    }*/
+    suspend fun insertDefaultProducts(categoryIds: Map<String, Int>) {
+        productDao.insertProduct(ProductEntity(name = "Festive Bread", categoryId = categoryIds["Pastries"]!!, price = 5.99, imageRes = R.drawable.test_bread))
+        Log.d("HomeViewModel", "Inserted product Festive Bread")
+        productDao.insertProduct(ProductEntity(name = "Samsung 55\" TV", categoryId = categoryIds["Electronics"]!!, price = 599.99, imageRes = R.drawable.test_tv))
+        Log.d("HomeViewModel", "Inserted Samsung")
+        productDao.insertProduct(ProductEntity(name = "Hisense Washing Machine", categoryId = categoryIds["Detergents"]!!, price = 399.99, imageRes = R.drawable.test_washm))
+        Log.d("HomeViewModel", "Inserted Hisense Washing Machine")
+        productDao.insertProduct(ProductEntity(name = "Samsung Fridge", categoryId = categoryIds["Electronics"]!!, price = 799.99, imageRes = R.drawable.test_fridge))
+        Log.d("HomeViewModel", "Inserted Samsung Fridge")
+        productDao.insertProduct(ProductEntity(name = "Brookside Milk", categoryId = categoryIds["Drinks"]!!, price = 2.99, imageRes = R.drawable.test_milk))
+        Log.d("HomeViewModel", "Inserted Brookside Milk")
+        productDao.insertProduct(ProductEntity(name = "Ramtons Blender", categoryId = categoryIds["Electronics"]!!, price = 49.99, imageRes = R.drawable.test_blender))
+        Log.d("HomeViewModel", "Inserted Ramtons Blender")
+    }
+
 
     fun loadAllProducts(){
         viewModelScope.launch {
-            val allProducts = productDao.getAllProductsWithCategoryName()
+            val allProducts = withContext(Dispatchers.IO) {
+                productDao.getAllProductsWithCategoryName()
+            }
+
+            //A log to see if there's a problem with loading the products
+            Log.d("HomeViewModel", "loadAllProducts: fetched ${allProducts.size} items")
 
             // Load all products into stateflow
             _products.value = allProducts

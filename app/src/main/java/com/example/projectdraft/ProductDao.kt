@@ -23,7 +23,7 @@ interface ProductDao {
         INNER JOIN CategoriesEntity c 
         ON p.categoryId = c.id
     """)
-    fun getAllProductsWithCategoryName(): List<ProductWithName>
+    suspend fun getAllProductsWithCategoryName(): List<ProductWithName>
     /*Breakdown of the JOIN:
     * SELECT p.* selects all the columns of the ProductEntity
     * c.name selects the name column in CategoriesEntity
