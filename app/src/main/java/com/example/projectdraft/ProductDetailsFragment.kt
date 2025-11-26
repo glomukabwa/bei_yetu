@@ -1,6 +1,8 @@
 package com.example.projectdraft
 
+import android.content.Intent
 import android.graphics.Paint
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -75,7 +78,7 @@ fun ProductDetails(
     var commentText by remember { mutableStateOf("") }
     val comments by viewModel.comments.collectAsState()
     val currentUserName by userSessionViewModel.currentUser.collectAsState()
-
+    val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -119,7 +122,13 @@ fun ProductDetails(
                         contentAlignment = Alignment.Center
                     ){
                         Button(
-                            onClick = { /* TODO: open it.websiteUrl */ },
+                            onClick = {
+                                val url = it.websiteUrl
+                                if (!url.isNullOrBlank()) {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                    context.startActivity(intent)
+                                }
+                            },
                             modifier = Modifier
                                 .padding(top = 8.dp)
                         ) {
@@ -156,7 +165,13 @@ fun ProductDetails(
                             ) {
                                 Text(store.storeName)
                                 Text("Ksh ${store.price}")
-                                Button(onClick = { /* TODO: open store.websiteUrl */ }) {
+                                Button(onClick = {
+                                    val url = store.websiteUrl
+                                    if (!url.isNullOrBlank()) {
+                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        context.startActivity(intent)
+                                    }
+                                }) {
                                     Text("Buy")
                                 }
                             }
@@ -239,6 +254,22 @@ fun ProductDetails(
 
     }
 }
+
+@Composable
+fun StoreLinkButton(store: StoreEntity) {
+    val context = LocalContext.current
+
+    Button(
+        onClick = {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(store.websiteUrl))
+            context.startActivity(intent)
+        },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text("Visit ${store.name}")
+    }
+}
+
 
 
 @Preview(showBackground = true)

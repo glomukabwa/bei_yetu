@@ -11,4 +11,8 @@ class UserSessionViewModel : ViewModel() {
     fun login(email: String) {
         _currentUser.value = email
     }
+
+    fun logout() {
+        _currentUser.value = null
+    }
 }

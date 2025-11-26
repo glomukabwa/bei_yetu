@@ -38,6 +38,10 @@ class MainActivity : ComponentActivity() {
                 val items = listOf(
                     Screen.Home, Screen.Orders, Screen.Categories, Screen.Account
                 )
+                val pushEnabledState = remember { mutableStateOf(false) }
+
+
+
 
                 Scaffold(
                     bottomBar = {
@@ -74,7 +78,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = "home",
+                        startDestination = "login",
                         modifier = Modifier.padding(innerPadding)
                     ) {
                         composable("login") {
@@ -122,7 +126,6 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-
                         composable("productDetail/{productId}") { backStackEntry ->
                             val productId = backStackEntry.arguments?.getString("productId")?.toInt() ?: 0
                             ProductDetailScreen(productId = productId, viewModel = viewModel)
@@ -139,6 +142,26 @@ class MainActivity : ComponentActivity() {
                                 }
                             )
                         }
+
+                        composable("account") {
+                            val navController = rememberNavController()
+                            val userSessionViewModel: UserSessionViewModel = viewModel()
+
+                            AccountScreen(
+                                userName = userSessionViewModel.currentUser.collectAsState().value ?: "Guest",
+                                onLogoutClicked = {
+                                    userSessionViewModel.logout()
+                                    navController.navigate("login") {
+                                        popUpTo("home") { inclusive = true } // clears backstack
+                                        launchSingleTop = true
+                                    }
+                                },
+                                onUserProfileClicked = { navController.navigate("profile") },
+                                isPushEnabled = pushEnabledState.value,
+                                onPushToggle = { enabled -> pushEnabledState.value = enabled }
+                            )
+                        }
+
 
                         // Other screens
                         // composable(Screen.Orders.route) { OrdersScreen() }
