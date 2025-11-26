@@ -1,6 +1,5 @@
 package com.example.projectdraft
 
-import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +18,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -38,13 +39,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.projectdraft.ui.theme.ProjectdraftTheme
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.projectdraft.ui.theme.ProjectdraftTheme
 
 
 class HomePageFragment : Fragment() {
@@ -103,11 +106,19 @@ fun HomePageScreen(
     navController: NavController, // add navigation so you can go to ProductDetailScreen
     searchQuery: String? = null // optional argument
 ) {
-    // If a searchQuery was passed, trigger search once
-    LaunchedEffect(searchQuery) {
-        searchQuery?.let { viewModel.searchProducts(it) }
-    }
+    // Local state for the search bar text
+    var searchText by remember { mutableStateOf("") }
 
+    // When searchQuery changes (from navigation), update both the search bar text and trigger search
+    LaunchedEffect(searchQuery) {
+        if (searchQuery.isNullOrEmpty() || searchQuery == "null") {
+            viewModel.loadAllProducts()
+            searchText = "" // clear bar
+        } else {
+            searchText = searchQuery   // show category name
+            viewModel.searchProducts(searchQuery)
+        }
+    }
     /*collectAsState() converts StateFlow into a Compose State.
       This means anytime _products changes in ViewModel,
       the UI recomposes automatically.*/
@@ -120,10 +131,17 @@ fun HomePageScreen(
     ){
         TopBar()
 
-        /*Passing the viewModel's search function*/
+
         HomepageSearchBar(
-            onSearch = { query -> viewModel.searchProducts(query)
-        })
+            text = searchText,
+            onTextChange = { newValue ->
+                searchText = newValue
+                viewModel.searchProducts(newValue) // live search
+            },
+            onSearch = { query ->
+                viewModel.searchProducts(query) // search on enter
+            }
+        )
 
         topCategories()
 
@@ -182,8 +200,12 @@ fun GreetingSection(){
 }
 
 @Composable
-fun HomepageSearchBar(onSearch: (String) -> Unit){
-    var searchWord by remember { mutableStateOf("") }
+fun HomepageSearchBar(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onSearch: (String) -> Unit
+){
+    //var searchWord by remember { mutableStateOf("") }
     /*Ok so above, I know it's a bit confusing why the value is not false like we it was in our other app so apparently,
     * what we put in the brackets is usually what we want our initial value of the variable to be. In this case, we want it to be
     * a black string so that's why we are putting ""
@@ -198,14 +220,18 @@ fun HomepageSearchBar(onSearch: (String) -> Unit){
 
 
     TextField(
-        value = searchWord,
+        value = text,
         onValueChange = {
+                newValue ->
+            onTextChange(newValue) // update parent state
+            onSearch(newValue)
+
             /*onValueChange just means,"If the value changes, do the following:"*/
-            searchWord = it /*Ok so here is what "it" is for, when the value of the searchWord changes, the variable is a state, right? So the change is detected.
+            /*searchWord = it Ok so here is what "it" is for, when the value of the searchWord changes, the variable is a state, right? So the change is detected.
             What we know now is that there has been change but then we need to actually assign that new value and that is what it does. It says that, "You see that
             new value entered, that is what searchWord is now equal to*/
 
-            onSearch(it) // calling the viewModel search function
+            //onSearch(it) // calling the viewModel search function
         },
 
 
@@ -240,7 +266,7 @@ fun HomepageSearchBar(onSearch: (String) -> Unit){
             .border(1.5.dp, Color.Gray, MaterialTheme.shapes.medium),
 
 
-        singleLine = false, /*This means that the user can only enter a single line of words. If they press enter, it won't work*/
+        singleLine = true, /*This means that the user can only enter a single line of words. If they press enter, it won't work*/
 
         shape = MaterialTheme.shapes.small,//Rounded corners
         colors = TextFieldDefaults.colors(
@@ -248,8 +274,13 @@ fun HomepageSearchBar(onSearch: (String) -> Unit){
             focusedContainerColor = Color.White,
             unfocusedIndicatorColor = Color.Transparent,/*This is how you remove the default grey line on the bottom border*/
             focusedIndicatorColor = Color.Transparent
-            )
+            ),
 
+        // Trigger search when user presses "Done" on keyboard
+        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(
+            onSearch = { onSearch(text) }
+        )
     )
 }
 

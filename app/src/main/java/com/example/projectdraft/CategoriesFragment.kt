@@ -119,7 +119,7 @@ fun GroupedCategoriesLazy(
                     items(productsInCat) { product ->
                         CategoryItem(
                             icon = product.imageRes,
-                            name = product.name,
+                            name = product.subcategoryName,
                             onClick = { onCategoryClick(catName) }
                         )
                     }
@@ -133,15 +133,15 @@ fun GroupedCategoriesLazy(
 }
 
 @Composable
-fun CategoryItem(icon: Int, name : String, onClick: () -> Unit){
+fun CategoryItem(icon: Int, name: String, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .size(width = 90.dp, height = 140.dp)
-            .border(1.5.dp, Color.LightGray, MaterialTheme.shapes.medium),
-            //.background(Color.Gray, MaterialTheme.shapes.medium)
+            .border(1.5.dp, Color.LightGray, MaterialTheme.shapes.medium)
+            .clickable { onClick() }, // 👈 make it clickable
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-    ){
+    ) {
         Image(
             painter = painterResource(icon),
             contentDescription = "Category Icon",
@@ -149,11 +149,12 @@ fun CategoryItem(icon: Int, name : String, onClick: () -> Unit){
         )
 
         Text(
-            text = "$name",
+            text = name,
             textAlign = TextAlign.Center
         )
     }
 }
+
 
 @Preview(
     name = "Light Mode",

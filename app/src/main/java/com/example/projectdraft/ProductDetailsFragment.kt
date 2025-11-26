@@ -81,7 +81,7 @@ fun ProductDetails(
                     contentDescription = product.name,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp),
+                        .height(350.dp),
                     contentScale = ContentScale.Crop
                 )
 

@@ -1,5 +1,6 @@
 package com.example.projectdraft
 
+import android.R.attr.defaultValue
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,11 +16,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.findNavController
+import androidx.navigation.navArgument
 
 import com.example.projectdraft.ProjectdraftTheme
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -47,11 +50,19 @@ class MainActivity : ComponentActivity() {
                                     label = { Text(screen.label) },
                                     selected = currentRoute == screen.route,
                                     onClick = {
-                                        navController.navigate(screen.route) {
-                                            popUpTo(navController.graph.startDestinationId) { saveState = true }
-                                            launchSingleTop = true
-                                            restoreState = true
+                                        if (screen == Screen.Home) {
+                                            navController.navigate("home?searchQuery=null") {
+                                                popUpTo("home?searchQuery={searchQuery}") { saveState = false }
+                                                launchSingleTop = true
+                                            }
+                                        } else {
+                                            navController.navigate(screen.route) {
+                                                popUpTo(navController.graph.startDestinationId) { saveState = true }
+                                                launchSingleTop = true
+                                                restoreState = true
+                                            }
                                         }
+
                                     },
                                     selectedContentColor = Color(0xFF601EF9),
                                     unselectedContentColor = Color.Gray
@@ -62,10 +73,19 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     NavHost(
                         navController = navController,
-                        startDestination = Screen.Home.route,
+                        startDestination = "home?searchQuery={searchQuery}",
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable("home?searchQuery={searchQuery}") { backStackEntry ->
+                        composable(
+                            route = "home?searchQuery={searchQuery}",
+                            arguments = listOf(
+                                navArgument("searchQuery") {
+                                    type = NavType.StringType
+                                    nullable = true
+                                    defaultValue = null
+                                }
+                            )
+                        ) { backStackEntry ->
                             val searchQuery = backStackEntry.arguments?.getString("searchQuery")
                             HomePageScreen(
                                 viewModel = viewModel,
@@ -73,24 +93,30 @@ class MainActivity : ComponentActivity() {
                                 searchQuery = searchQuery
                             )
                         }
+
                         composable("productDetail/{productId}") { backStackEntry ->
                             val productId = backStackEntry.arguments?.getString("productId")?.toInt() ?: 0
                             ProductDetailScreen(productId = productId, viewModel = viewModel)
                         }
 
-                        // Categories → navigate back to Home with searchQuery
                         composable(Screen.Categories.route) {
                             CategoriesScreen(
                                 viewModel = viewModel,
                                 onCategoryClick = { categoryName ->
-                                    navController.navigate("home?searchQuery=$categoryName")
+                                    navController.navigate("home?searchQuery=$categoryName") {
+                                        popUpTo("home?searchQuery={searchQuery}") { saveState = false }
+                                        launchSingleTop = true
+                                    }
                                 }
                             )
                         }
-                        //composable(Screen.Orders.route) { OrdersScreen() }
-                        //composable(Screen.Account.route) { AccountScreen() }
-                        //composable(Screen.Statistics.route) { StatisticsScreen() }
+
+                        // Other screens
+                        // composable(Screen.Orders.route) { OrdersScreen() }
+                        // composable(Screen.Account.route) { AccountScreen() }
+                        // composable(Screen.Statistics.route) { StatisticsScreen() }
                     }
+
                 }
             }
         }
