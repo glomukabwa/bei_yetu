@@ -35,7 +35,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.material.icons.filled.PhotoCamera // <-- Added for UserProfileScreen profile picture edit icon
-
 // Define the custom color (Hex #3700B3)
 val DeepPurple = Color(0xFF3700B3)
 
@@ -423,17 +422,17 @@ fun ChangePasswordDialog(
     }
 }
 
-// Preview for ChangePasswordDialog
-@Preview(showBackground = true, name = "Change Password Dialog Preview")
+
+
 @Composable
-fun ChangePasswordDialogPreview() {
-    ProjectdraftTheme {
-        // The dialog is wrapped in a Box to simulate being centered on a screen
-        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.5f)), contentAlignment = Alignment.Center) {
-            ChangePasswordDialog(
-                onDismissRequest = {},
-                onSaveClicked = { _, _ -> }
-            )
-        }
+fun ChangePasswordDialog(
+    // Add the modifier parameter here:
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+    onSaveClicked: (String, String) -> Unit
+) {
+    // 2. Apply the modifier to the outermost layout inside the function
+    Surface(modifier = modifier) {
+        // ... rest of the dialog content
     }
 }

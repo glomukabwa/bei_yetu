@@ -7,13 +7,15 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview // <-- IMPORTANT: Added for Preview support
 import com.example.projectdraft.ui.theme.ProjectdraftTheme
 
-class LoginActivity : ComponentActivity() {
+class LogInActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -42,12 +44,23 @@ fun LoginScreen(onLogin: () -> Unit, onGoToSignUp: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        // *** CORRECTION 1: Center all children horizontally ***
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // *** CORRECTION 2: Icon/Logo at the top and center ***
+        Text(
+            "🛒 BeiYetu",
+            style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(bottom = 64.dp)
+        )
 
-        Text("Welcome Back", style = MaterialTheme.typography.headlineSmall)
-
-        Spacer(Modifier.height(16.dp))
+        // Correction 3: Centered text is achieved by the parent Column's horizontalAlignment
+        Text(
+            "Welcome Back",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
         OutlinedTextField(
             value = email,
@@ -77,6 +90,7 @@ fun LoginScreen(onLogin: () -> Unit, onGoToSignUp: () -> Unit) {
 
         Spacer(Modifier.height(8.dp))
 
+        // Correction 4: Centered TextButton is achieved by the parent Column's horizontalAlignment
         TextButton(onClick = onGoToSignUp) {
             Text("Don't have an account? Sign Up")
         }
@@ -86,7 +100,6 @@ fun LoginScreen(onLogin: () -> Unit, onGoToSignUp: () -> Unit) {
 @Preview(showBackground = true, name = "Login Screen Preview")
 @Composable
 fun LoginScreenPreview() {
-    // Wrapping the screen in your Theme ensures the colors and styling are correct in the preview
     ProjectdraftTheme {
         LoginScreen(
             onLogin = { /* Preview: Login Clicked */ },

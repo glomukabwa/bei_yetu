@@ -7,10 +7,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment // **New Import for Alignment**
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview // <-- 1. Import for Preview
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.projectdraft.ui.theme.ProjectdraftTheme
 
 class SignUpActivity : ComponentActivity() {
@@ -43,10 +45,24 @@ fun SignUpScreen(onSignUp: () -> Unit, onGoToLogin: () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        // *** CORRECTION 1: Center all children horizontally ***
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Text("Create Account", style = MaterialTheme.typography.headlineSmall)
+        // *** CORRECTION 2: Icon/Logo at the top and center ***
+        Text(
+            "🛒 BeiYetu", // Placeholder for your icon/logo
+            style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(bottom = 64.dp)
+        )
+
+        // Correction 3: Centered text is achieved by the parent Column's horizontalAlignment
+        Text(
+            "Create Account",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
         Spacer(Modifier.height(16.dp))
 
@@ -85,6 +101,7 @@ fun SignUpScreen(onSignUp: () -> Unit, onGoToLogin: () -> Unit) {
             Text("Create Account")
         }
 
+        // Correction 4: Centered TextButton is achieved by the parent Column's horizontalAlignment
         TextButton(onClick = onGoToLogin) {
             Text("Back to Login")
         }
@@ -94,7 +111,6 @@ fun SignUpScreen(onSignUp: () -> Unit, onGoToLogin: () -> Unit) {
 @Preview(showBackground = true, name = "Sign Up Screen Preview")
 @Composable
 fun SignUpScreenPreview() {
-    // 3. Wrap in your Theme and call the main composable with placeholder lambdas
     ProjectdraftTheme {
         SignUpScreen(
             onSignUp = { /* Preview: Sign Up Clicked */ },

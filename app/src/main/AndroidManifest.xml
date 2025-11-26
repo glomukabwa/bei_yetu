@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Projectdraft">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -19,15 +20,17 @@
             android:theme="@style/Theme.Projectdraft">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-
         <activity
             android:name=".SignUpActivity"
-            android:exported="false" />
+            android:exported="true" />
+
+        <activity
+            android:name=".LogInActivity"
+            android:exported="true" />
 
     </application>
 
