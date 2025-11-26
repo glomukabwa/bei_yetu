@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Your main app theme -->
     <style name="Theme.Projectdraft" parent="Theme.AppCompat.Light.NoActionBar" />
+    <style name="Theme.Projectdraft.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/beiyetu_logo</item>
+        <item name="windowSplashScreenBackground">@color/white</item>
+    </style>
+
+
+
+
 </resources>
