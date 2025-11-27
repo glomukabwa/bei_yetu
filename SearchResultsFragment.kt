@@ -64,9 +64,10 @@ fun SearchScreen(products: List<ProductWithCategoryAndSubcategory>, query: Strin
     }
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        TopBar()
         Text("Search results for \"$query\"",
         style = MaterialTheme.typography.titleLarge.copy(fontSize = 16.sp),
-        modifier = Modifier.padding(bottom = 12.dp)
+        modifier = Modifier.padding(bottom = 12.dp).padding(16.dp)
         )
 
         if (filteredProducts.isEmpty()) {
@@ -101,14 +102,15 @@ fun ProductItem(product: ProductWithCategoryAndSubcategory) {
             Text(product.categoryName)
         }
     }
+
 }
 @Preview(
-    name = "Search Screen Light",
+    name = "Light Mode",
     uiMode = Configuration.UI_MODE_NIGHT_NO,
     showBackground = true
 )
 @Preview(
-    name = "Search Screen Dark",
+    name = "Dark Mode",
     uiMode = Configuration.UI_MODE_NIGHT_YES,
     showBackground = true
 )
