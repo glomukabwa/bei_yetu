@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 
+
+
 class CategoriesFragment : Fragment() {
 
     // Grab the activity‑scoped instance
