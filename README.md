@@ -22,18 +22,18 @@ This is a collaborative Android app built with Jetpack Compose and Room Database
 
 ## Demo Pictures
 - Sign up and Log in<br>
-<img width="349" height="766" alt="image" src="https://github.com/user-attachments/assets/3876a277-a6bc-4c8c-b99d-b7514dcbdc8d" />
-<img width="343" height="762" alt="image" src="https://github.com/user-attachments/assets/105e0714-8ca1-4870-b1ef-be3fb61f8de5" /><br>
+<img width="346" height="763" alt="image" src="https://github.com/user-attachments/assets/a412e364-9fe9-435e-bc03-1661fb177643" />
+<img width="343" height="762" alt="image" src="https://github.com/user-attachments/assets/105e0714-8ca1-4870-b1ef-be3fb61f8de5" /><br><br>
 
 - Home Page and Categories page<br>
 <img width="346" height="764" alt="image" src="https://github.com/user-attachments/assets/fa8c25b3-79cd-4a69-a5f4-88cafbd1aaa1" />
-<img width="347" height="761" alt="image" src="https://github.com/user-attachments/assets/20a67178-470b-4482-90cc-fcce52ed70b9" /><br>
+<img width="347" height="761" alt="image" src="https://github.com/user-attachments/assets/20a67178-470b-4482-90cc-fcce52ed70b9" /><br><br>
 
 - Product details page<br>
 <img width="350" height="764" alt="image" src="https://github.com/user-attachments/assets/d7c0b43e-0322-4887-8be5-907514e7cf09" />
 <img width="349" height="765" alt="image" src="https://github.com/user-attachments/assets/2d95feb8-6e32-453b-8887-d3a0fdb4f1c6" />
 <img width="351" height="768" alt="image" src="https://github.com/user-attachments/assets/cbb0fa04-8278-42be-bfd1-06cddf35cdfa" />
-<img width="346" height="764" alt="image" src="https://github.com/user-attachments/assets/8429baef-f32b-49ef-b648-c6af89312c2b" /><br>
+<img width="346" height="764" alt="image" src="https://github.com/user-attachments/assets/8429baef-f32b-49ef-b648-c6af89312c2b" /><br><br>
 
 - Account Page<br>
 <img width="346" height="767" alt="image" src="https://github.com/user-attachments/assets/e6e160c9-fde8-4d19-b531-d287e660e653" />
